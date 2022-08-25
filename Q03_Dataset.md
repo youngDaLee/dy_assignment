@@ -58,9 +58,16 @@ region = re.sub(r'["]', '', string)
 다만 0이상 10미만의 양수 float인 것으로 보아, 가격(달러) 혹은 수확량 데이터 일 것으로 추측합니다.
 
 ## Q02) What additional value can you extract from this dataset ? If you find any please explain how would you collect it (pseudo-algorithm)
-- 
+### additional column
+- average annual rate
+```
+
+``` 
+And It will be able to extract various statistics from weekly score data(mothly, yearly, ovarall, .. etc)
+
+### stats
 
 ## Q03) How would you approach the script of putting this information into a database ?(Concurrency, Scale, Prerequisites, etc..)
-- 일주일 단위로 나뉘어진 컬럼으로 추측해 봤을 때, 해당 데이터는 실시간으로 변동되는 데이터는 아닐 것으로 추측됩니다.
-- 따라서 스트리밍 처리 보다는 배치 형식으로 데이터를 처리해야 할 것으로 확인됩니다.
-- 파일 데이터를 spark 등을 이용하여 읽어들인 뒤, 적절하게 데이터 pre-processing 및 nomalizing을 한 뒤, 파일 형식 데이터를 bulk upload 할 것 입니다.
+- Judging from the columns by the week, It is assumed that the data is not real-time data.
+- Therefore, It is confirmed that data should be processed in **batch** rather than streaming
+- After reading File Data using Spark(or pandas... for using dataframe for preprocessing), pre-processing and nomalizing the data, And will Bulk Upload the file type Data

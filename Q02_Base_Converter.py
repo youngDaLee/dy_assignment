@@ -1,3 +1,6 @@
+import sys
+
+
 class Transformer(object):
     """Convert numbers from base 10 integers to base N strings and back again.
     Sample usage:
@@ -40,6 +43,7 @@ class Transformer(object):
         return res
 
 
-binary_transformer = Transformer('01')
-hex_transformer = Transformer('0123456789ABCDEF')
-base62_transformer = Transformer('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz')
+if __name__ == '__main__':
+    binary_transformer = Transformer('01')
+    hex_transformer = Transformer('0123456789ABCDEF')
+    base62_transformer = Transformer('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz')

@@ -1,7 +1,8 @@
 # Dataset
 ## Q01) How would you nomalized (parsing, pre-processing, grouping) this data to simplify it’s processing into a database?
 
-아래와 같은 형식으로 DB에 데이터를 정규화 할 것 입니다.
+I'll nomalized data and insert into DB table as follows
+
 
 | Product_id | Product | Country | Variety | Grades         | Region                        | Week       | Score |
 | ---------- | ------- | ------- | ------- | -------------- | ----------------------------- | ---------- | ----- |
@@ -9,27 +10,27 @@
 | 99         | Avocado | Chile   | Hass    | Second Quality | Pedro Aguirre Cerda, Santiago | 2020-11-16 | 4.15  |
 
 ### 1. Product ID
-데이터 추출 시, VARCHAR 형태 보다는 INT형 데이터를 추출하는 것이 비용이 적기 때문에, Product ID 컬럼을 추가했습니다.   
-Product ID는 raw 데이터셋의 #number 에서 정규식으로 추출 가능합니다.
+I add the Product_id column. cus When extractig Data, It is less expensive to extract INT type data than VARCHAR type data.   
+Product_id can be extract as a regex from the `#number` of the raw dataset   
 
 ```
 product_id = re.sub(r'[^0-9]', '', string)
 ```
 ### 2. Product
-product_id와 마찬가지로, 정규식을 사용해 product name을 추출 가능합니다.
+Extract product using regex like product_id
 
 ```
 product = re.findall(r'[A-Za-z]+', s)[0]
 ```
 ### 3. Country
-특별한 전처리 과정 없이 기존 column raw 데이터를 인서트 해 줍니다
+Insert country column data without any preprocessing
 
 ### 4. Variety
 ```
 Avocado / Variety / Hass
 ```
-
-위의 raw 데이터 중 실제 Variety 에 해당하는 데이터는 Hass 입니다. Variety에 해당하는 데이터를 pre-processing 하여 데이터 인서트를 합니다. 아래는 psudo-code 입니다.
+Among the raw data, the data corresponding Variety is Hass.   
+preprocessing the data corresponding to Variety and insert in to DB.   
 ```
 raw_variety = split "Avocado / Variety / Hass"
 variety = raw_variety[2]
@@ -38,34 +39,46 @@ variety = raw_variety[2]
 ```
 Avocado / Grade / Second Quality
 ```
-
-Variety와 마찬가지로 위의 raw 데이터 중 실제 Grade 에 해당하는 데이터는 Second Quality 입니다. Grade 해당하는 데이터를 pre-processing 하여 데이터 인서트를 합니다. 아래는 psudo-code 입니다.
+Among the raw data, the data corresponding Grades is Second Quality.   
+preprocessing the data corresponding to Grades and insert in to DB. 
 ```
 raw_grades = split "Avocado / Grade / Second Quality"
 grades = raw_grades[2]
 ```
 ### 6. Region
-Region 앞뒤의 큰따옴표를 제거하여 데이터 인서트 해 줍니다.
+Remove the double quotes(") before and after the Region. And insert into DB
 
 ```
 region = re.sub(r'["]', '', string)
 ```
 ### 7. Week
-날짜별 분석을 위해 인덱스를 걸 것 같습니다.
+The dates scattered in several columns are gathered into one column for structural and convenient analysis.
 
+If it is RDBMS, I'll indexing this column for analysis
 ### 8. Score
-사실 이 각 날짜에 대한 이 숫자가 어떤 것을 의미하는지에 대해서는 명확하게 파악하기 못했습니다.
-다만 0이상 10미만의 양수 float인 것으로 보아, 가격(달러) 혹은 수확량 데이터 일 것으로 추측합니다.
-
+Honestly, I don't have a clear idea of what these numbers meant for each date.
+However, considering that it is a positive float of 0 < n < 10, it is estimated that **price(dollar) or yield data**   
+But I named "Score" for its versatility
 ## Q02) What additional value can you extract from this dataset ? If you find any please explain how would you collect it (pseudo-algorithm)
 ### additional column
 - average annual rate
 ```
-
+result <- List
+for row in dataset do
+    data <- Dict
+    total = 0
+    num = 0
+    for key, value in row do
+        if key is datetime
+            total += value
+            num ++
+        else
+            data[key] = value
+    avg = total / num++
+    data['avg'] = avg
+    add data into result
 ``` 
 And It will be able to extract various statistics from weekly score data(mothly, yearly, ovarall, .. etc)
-
-### stats
 
 ## Q03) How would you approach the script of putting this information into a database ?(Concurrency, Scale, Prerequisites, etc..)
 - Judging from the columns by the week, It is assumed that the data is not real-time data.
